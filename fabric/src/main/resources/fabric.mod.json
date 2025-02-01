@@ -1,0 +1,39 @@
+{
+    "schemaVersion": 1,
+    "id": "minetogetherservers",
+    "version": "${version}",
+    "name": "MineTogether Server List",
+    "description": "",
+    "authors": [
+        "covers1624",
+        "Gigabit101",
+        "Cloudhunter",
+        "CreeperHost!"
+    ],
+    "contact": {
+        "sources": "https://github.com/CreeperHost/MineTogether",
+        "homepage": "https://github.com/CreeperHost/MineTogether",
+        "issues": "https://github.com/CreeperHost/MineTogether/issues"
+    },
+    "license": "GNU General Public License v3.0",
+    "icon": "",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "net.creeperhost.minetogetherservers.fabric.MineTogetherFabric"
+        ]
+    },
+    "depends": {
+        "fabricloader": ">=0.14.22",
+        "fabric": "*",
+        "minecraft": ">=1.21.4",
+        "architectury": ">=15.0.1",
+        "polylib": ">=2103.0.4-build.161"
+    },
+    "suggests": {
+        "flamingo": "*"
+    },
+    "mixins": [
+        "minetogetherservers-common.mixins.json"
+    ]
+}
