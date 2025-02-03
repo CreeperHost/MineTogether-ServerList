@@ -78,10 +78,4 @@ public class LocalConfig {
         filePath = file;
         return config;
     }
-
-    @Comment ("If the Multiplayer server list should have CreeperHost adverts.")
-    public boolean mpMenuEnabled = false;
-
-    @Comment ("INTERNAL: Marker for tracking first connections.")
-    public Set<String> firstConnect = new HashSet<>();
 }
