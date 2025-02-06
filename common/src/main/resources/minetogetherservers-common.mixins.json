@@ -2,16 +2,7 @@
     "required": true,
     "package": "net.creeperhost.minetogetherservers.mixin",
     "minVersion": "0.7.11",
-    "client": [
-      "chat.ChatScreenMixin",
-      "chat.ScreenMixin",
-      "chat.ingame.ChatComponentMixin",
-      "chat.ingame.GuiMixin",
-      "connect.JoinMultiplayerScreenMixin",
-      "connect.ServerSelectionListMixin",
-      "order.MixinServerSelectionList",
-      "order.TitleScreenMixin"
-    ],
+    "client": [],
     "server": [
       "server.MixinDedicatedServerProperties"
     ]

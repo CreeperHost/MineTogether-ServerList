@@ -1,16 +1,11 @@
 package net.creeperhost.minetogetherservers.serverlist;
 
+import com.google.common.hash.Hashing;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.hooks.client.screen.ScreenAccess;
 import dev.architectury.hooks.client.screen.ScreenHooks;
-import net.creeperhost.minetogetherservers.Constants;
-import net.creeperhost.minetogetherservers.MineTogetherServers;
-import net.creeperhost.minetogetherservers.chat.MineTogetherChat;
-import net.creeperhost.minetogetherservers.chat.gui.PublicChatGui;
-import net.creeperhost.minetogetherservers.config.LocalConfig;
-import net.creeperhost.minetogetherservers.gui.SettingGui;
 import net.creeperhost.minetogether.lib.web.ApiClientResponse;
-import net.creeperhost.minetogetherservers.polylib.gui.IconButton;
+import net.creeperhost.minetogetherservers.MineTogetherServers;
 import net.creeperhost.minetogetherservers.serverlist.data.ListType;
 import net.creeperhost.minetogetherservers.serverlist.data.Server;
 import net.creeperhost.minetogetherservers.serverlist.gui.ServerListGui;
@@ -26,9 +21,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Created by covers1624 on 25/10/22.
@@ -42,8 +37,12 @@ public class MineTogetherServerList {
     private static ListType lastRequest;
     private static long lastRequestTime = 0;
     private static boolean incorrectlyConfigured = true;
+    private static String uuidHash;
 
     public static void init() {
+        UUID uuid = Minecraft.getInstance().getUser().getProfileId();
+        uuidHash = Hashing.sha256().hashString(uuid.toString(), UTF_8).toString().toUpperCase(Locale.ROOT);
+
         ModPackInfo.waitForInfo(versionInfo -> {
             incorrectlyConfigured = versionInfo.curseID.isEmpty() && versionInfo.base64FTBID.isEmpty();
             if (incorrectlyConfigured) {
@@ -64,7 +63,7 @@ public class MineTogetherServerList {
                 return Collections.unmodifiableList(servers);
 
             try {
-                ApiClientResponse<GetServerListRequest.Response> resp = MineTogetherServers.API.execute(new GetServerListRequest(type, MineTogetherChat.CHAT_AUTH.getHash()));
+                ApiClientResponse<GetServerListRequest.Response> resp = MineTogetherServers.API.execute(new GetServerListRequest(type, uuidHash));
                 servers.clear();
                 servers.addAll(resp.apiResponse().servers);
             } catch (Throwable ex) {

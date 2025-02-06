@@ -1,8 +1,9 @@
 package net.creeperhost.minetogetherservers.serverlist.data;
 
+import net.creeperhost.minetogether.lib.util.Countries;
+import net.creeperhost.minetogetherservers.MineTogetherServers;
 import net.creeperhost.minetogetherservers.serverlist.gui.ServerDataPublic;
 import net.creeperhost.minetogetherservers.util.EnumFlag;
-import net.creeperhost.minetogetherservers.util.Countries;
 import net.minecraft.network.chat.Component;
 
 import java.util.Comparator;
@@ -44,11 +45,11 @@ public enum SortType implements Comparator<ServerDataPublic> {
             EnumFlag f2 = o2.server.getFlag();
 
             if (f1 == f2) return 0;
-            if (f1.name().equals(Countries.getOurCountry())) {
-                return f2.name().equals(Countries.getOurCountry()) ? 1 : -1;
+            if (f1.name().equals(Countries.getOurCountry(MineTogetherServers.API))) {
+                return f2.name().equals(Countries.getOurCountry(MineTogetherServers.API)) ? 1 : -1;
             }
-            if (f2.name().equals(Countries.getOurCountry())) {
-                return f1.name().equals(Countries.getOurCountry()) ? -1 : 1;
+            if (f2.name().equals(Countries.getOurCountry(MineTogetherServers.API))) {
+                return f1.name().equals(Countries.getOurCountry(MineTogetherServers.API)) ? -1 : 1;
             }
 
             int ret = f1.name().compareToIgnoreCase(f2.name());

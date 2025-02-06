@@ -1,42 +1,24 @@
 package net.creeperhost.minetogetherservers;
 
-import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import dev.architectury.event.events.client.ClientCommandRegistrationEvent;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.hooks.client.screen.ScreenAccess;
-import net.creeperhost.minetogetherservers.chat.FriendChatNotifier;
-import net.creeperhost.minetogetherservers.chat.MineTogetherChat;
-import net.creeperhost.minetogetherservers.chat.gui.ChatScreenInjection;
-import net.creeperhost.minetogetherservers.config.Config;
-import net.creeperhost.minetogetherservers.connect.MineTogetherConnect;
-import net.creeperhost.minetogetherservers.gui.SettingGui;
 import net.creeperhost.minetogether.lib.web.ApiClientResponse;
+import net.creeperhost.minetogether.session.MineTogetherSession;
 import net.creeperhost.minetogetherservers.serverlist.MineTogetherServerList;
 import net.creeperhost.minetogetherservers.serverlist.data.Server;
 import net.creeperhost.minetogetherservers.serverlist.web.GetServerRequest;
-import net.creeperhost.minetogether.session.MineTogetherSession;
 import net.creeperhost.minetogetherservers.util.MTSessionProvider;
-import net.creeperhost.polylib.client.modulargui.ModularGuiInjector;
-import net.creeperhost.polylib.client.screen.ButtonHelper;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Renderable;
-import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.narration.NarratableEntry;
-import net.minecraft.client.gui.screens.*;
+import net.minecraft.client.gui.screens.ConnectScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
-import net.minecraft.commands.CommandBuildContext;
-import net.minecraft.network.chat.Component;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Initialize on a client.

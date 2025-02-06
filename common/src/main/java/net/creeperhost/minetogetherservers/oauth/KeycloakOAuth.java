@@ -9,7 +9,8 @@ import com.github.scribejava.core.oauth.AccessTokenRequestParams;
 import com.github.scribejava.core.oauth.AuthorizationUrlBuilder;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import com.google.gson.*;
-import net.creeperhost.minetogetherservers.chat.MineTogetherChat;
+import net.creeperhost.minetogetherservers.compat.Integration;
+import net.creeperhost.minetogetherservers.compat.MTCIntegration;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import org.apache.commons.io.IOUtils;
@@ -184,7 +185,7 @@ public class KeycloakOAuth {
             public void run() {
                 server.stop();
                 timer.cancel();
-                MineTogetherChat.CHAT_STATE.profileManager.refreshOwnProfile();
+                Integration.runOptional("minetogethercommunity", () -> MTCIntegration::refreshOwnProfile);
             }
         }, 1000);
     }
