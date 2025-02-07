@@ -43,9 +43,7 @@ public class MineTogetherServersClient {
 
         MineTogetherServerList.init();
 
-
         ClientGuiEvent.INIT_POST.register(MineTogetherServersClient::onScreenOpen);
-//        Integration.loadOptionalIntegration("ftbpc", () -> FTBPackCompanionCompat::init);
     }
 
     private static void onScreenOpen(Screen screen, ScreenAccess screenAccess) {
