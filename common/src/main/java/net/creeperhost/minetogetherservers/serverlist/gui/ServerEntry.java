@@ -147,7 +147,7 @@ public class ServerEntry extends GuiElement<ServerEntry> implements BackgroundRe
         render.rect(xMin(), yMax(), xSize(), 1, MTStyle.Flat.listEntryBackground(true));
         render.rect(xMin(), yMax(), xSize(), 1, MTStyle.Flat.listEntryBackground(true));
 
-        if (this.serverData.state() == ServerData.State.INITIAL){
+        if (!this.serverData.pinged){
             doPing();
         }
 
@@ -164,21 +164,21 @@ public class ServerEntry extends GuiElement<ServerEntry> implements BackgroundRe
 
     public void update() {
         tick+=4;
-        if (this.serverData.state() == ServerData.State.INITIAL && tick > index) {
+        if (!this.serverData.pinged && tick > index) {
             doPing();
         }
     }
 
     private void doPing() {
-        if (this.serverData.state() == ServerData.State.INITIAL) {
-            this.serverData.setState(ServerData.State.PINGING);
+        if (!this.serverData.pinged) {
+            this.serverData.pinged = true;
             this.serverData.ping = -2L;
             this.serverData.motd = Component.empty();
             this.serverData.status = Component.empty();
             THREAD_POOL.submit(() ->
             {
                 try {
-                    gui.getPinger().pingServer(this.serverData, () -> {}, () -> {});
+                    gui.getPinger().pingServer(this.serverData, () -> {});
                     gui.sortDirty = true;
                 } catch (UnknownHostException var2) {
                     this.serverData.ping = -1L;
@@ -207,7 +207,7 @@ public class ServerEntry extends GuiElement<ServerEntry> implements BackgroundRe
     }
 
     private String getSignalIcon() {
-        if (this.serverData.state() == ServerData.State.SUCCESSFUL && this.serverData.ping != -2L) {
+        if (this.serverData.pinged && this.serverData.ping != -2L) {
             if (this.serverData.ping < 0L) {
                 return "signal/signal_0";
             } else if (this.serverData.ping < 150L) {
@@ -231,7 +231,7 @@ public class ServerEntry extends GuiElement<ServerEntry> implements BackgroundRe
     }
 
     private Component signalInfo() {
-        if (this.serverData.state() == ServerData.State.SUCCESSFUL && this.serverData.ping != -2L) {
+        if (this.serverData.pinged && this.serverData.ping != -2L) {
             return this.serverData.ping < 0L ? Component.translatable("multiplayer.status.no_connection").withStyle(ChatFormatting.DARK_RED) : Component.translatable("multiplayer.status.ping", new Object[]{this.serverData.ping});
         } else {
             return Component.translatable("multiplayer.status.pinging");

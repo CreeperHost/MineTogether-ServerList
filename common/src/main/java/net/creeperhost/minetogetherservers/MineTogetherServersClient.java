@@ -70,7 +70,7 @@ public class MineTogetherServersClient {
             }
 
             ServerData serverData = new ServerData(server.ip, String.valueOf(server.port), ServerData.Type.OTHER);
-            ConnectScreen.startConnecting(new JoinMultiplayerScreen(screen), Minecraft.getInstance(), ServerAddress.parseString(serverData.ip), serverData, false, null);
+            ConnectScreen.startConnecting(new JoinMultiplayerScreen(screen), Minecraft.getInstance(), ServerAddress.parseString(serverData.ip), serverData, false);
         }
     }
 }

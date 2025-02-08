@@ -16,11 +16,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -87,7 +85,7 @@ public class PregenHandler {
                 int chunkProgress = percentage(pregenTask.totalChunks, pregenTask.chunksDone);
 
                 pregenTask.lastPregenString = "Pre-generating chunks for dimension " + pregenTask.dimension.location() + ", current speed " + chunksDelta + " every 10 seconds." + "\n" + pregenTask.chunksDone + "/" +
-                        pregenTask.totalChunks + " " + getTimeRemaining(pregenTask) + " remaining " + ":";
+                                              pregenTask.totalChunks + " " + getTimeRemaining(pregenTask) + " remaining " + ":";
 
                 LOGGER.info(pregenTask.lastPregenString);
                 long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
@@ -187,11 +185,14 @@ public class PregenHandler {
     }
 
     private static void serializePreload() {
-        Type listOfPregenTask = new TypeToken<HashMap<Integer, PregenTask>>() {}.getType();
-        try (OutputStream os = Files.newOutputStream(MineTogetherServersServer.minecraftServer.getServerDirectory().resolve("pregenData.json"))) {
+        FileOutputStream pregenOut = null;
+        Type listOfPregenTask = new TypeToken<HashMap<Integer, PregenTask>>() {
+        }.getType();
+        try {
+            pregenOut = new FileOutputStream(new File(MineTogetherServersServer.minecraftServer.getServerDirectory(), "pregenData.json"));
             Gson gson = new GsonBuilder().create();
             String output = gson.toJson(pregenTasks, listOfPregenTask);
-            IOUtils.write(output, os, StandardCharsets.UTF_8);
+            IOUtils.write(output, pregenOut);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -203,8 +204,8 @@ public class PregenHandler {
         HashMap output = null;
         Type listOfPregenTask = new TypeToken<HashMap<Integer, PregenTask>>() {
         }.getType();
-        try (InputStream is = Files.newInputStream(MineTogetherServersServer.minecraftServer.getServerDirectory().resolve("pregenData.json"))) {
-            output = gson.fromJson(IOUtils.toString(is, StandardCharsets.UTF_8), listOfPregenTask);
+        try {
+            output = gson.fromJson(IOUtils.toString(new File(MineTogetherServersServer.minecraftServer.getServerDirectory(), "pregenData.json").toURI()), listOfPregenTask);
         } catch (Exception ignored) { }
         if (output == null) { pregenTasks = new HashMap<ResourceKey<Level>, PregenTask>(); } else pregenTasks = output;
 
