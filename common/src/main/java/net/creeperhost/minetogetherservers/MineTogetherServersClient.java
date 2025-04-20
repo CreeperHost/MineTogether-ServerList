@@ -1,6 +1,7 @@
 package net.creeperhost.minetogetherservers;
 
 import dev.architectury.event.events.client.ClientGuiEvent;
+import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.hooks.client.screen.ScreenAccess;
 import net.creeperhost.minetogether.lib.web.ApiClientResponse;
 import net.creeperhost.minetogether.session.MineTogetherSession;
@@ -34,18 +35,18 @@ public class MineTogetherServersClient {
     public static void init() {
         LOGGER.info("Initializing MineTogether Server List Client!");
 
-        MineTogetherSession.getDefault().setProvider(new MTSessionProvider());
-        MineTogetherSession.getDefault().onTokenRefreshed(token -> {
-            MineTogetherServers.AUTH.setHeader("Authorization", "Bearer " + token);
-        });
-        // Trigger session validation and set auth header.
-        MineTogetherSession.getDefault().getTokenAsync();
-
-        MineTogetherServerList.init();
-
-
         ClientGuiEvent.INIT_POST.register(MineTogetherServersClient::onScreenOpen);
-//        Integration.loadOptionalIntegration("ftbpc", () -> FTBPackCompanionCompat::init);
+
+        //Cant do this in init anymore because init now occurs before Minecraft.instance is initialised.
+        ClientLifecycleEvent.CLIENT_SETUP.register(instance -> {
+            MineTogetherServerList.init();
+            MineTogetherSession.getDefault().setProvider(new MTSessionProvider());
+            MineTogetherSession.getDefault().onTokenRefreshed(token -> {
+                MineTogetherServers.AUTH.setHeader("Authorization", "Bearer " + token);
+            });
+            // Trigger session validation and set auth header.
+            MineTogetherSession.getDefault().getTokenAsync();
+        });
     }
 
     private static void onScreenOpen(Screen screen, ScreenAccess screenAccess) {
