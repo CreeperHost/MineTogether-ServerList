@@ -80,6 +80,8 @@ shadowJar {
     relocate 'fi.iki.elonen', 'net.creeperhost.minetogetherservers.fi.iki.elonen'
     // TODO can we switch scribble to using Gson?
     relocate 'com.fasterxml.jackson', 'net.creeperhost.minetogetherservers.com.fasterxml.jackson'
+    relocate 'net.creeperhost.minetogether.lib', 'net.creeperhost.minetogetherservers.repack.minetogether.lib'
+    relocate 'net.creeperhost.minetogether.session', 'net.creeperhost.minetogetherservers.repack.minetogether.session'
 }
 
 remapJar {
