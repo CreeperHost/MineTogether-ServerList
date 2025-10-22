@@ -66,6 +66,12 @@ public class ModPackInfo {
         public long parent;
     }
 
+    public static class FTBInstanceNew {
+        public long id;
+        public long packType;
+        public long versionId;
+    }
+
     public static class CurseInstance {
         public long projectID = -1;
     }
@@ -104,13 +110,15 @@ public class ModPackInfo {
 
         public VersionInfo init() {
             Path versionJson = Platform.getGameFolder().resolve("version.json");
-            Path versionJsonNew = Platform.getGameFolder().resolve(".ftbapp/version.json");
+            Path versionJsonNew = Platform.getGameFolder().resolve("instance.json");
 
-            if (!readVersionJson(versionJson) && !readVersionJson(versionJsonNew)) {
-                if (curseID.isEmpty()) {
-                    tryParseLauncherFiles();
+            if (!readVersionJson(versionJson)) {
+                if (!readNewFTB(versionJsonNew)) {
+                    if (curseID.isEmpty()) {
+                        tryParseLauncherFiles();
+                    }
+                    fetchWebsiteIDCurse();
                 }
-                fetchWebsiteIDCurse();
             }
 
             Map<String, String> json = new HashMap<>();
@@ -123,6 +131,42 @@ public class ModPackInfo {
 
             realName = GSON.toJson(json);
             return this;
+        }
+
+        private boolean readNewFTB(Path path) {
+            if (Files.exists(path)) {
+                try {
+                    FTBInstanceNew manifest = JsonUtils.parse(GSON, path, FTBInstanceNew.class);
+                    //FTB pack
+                    if (manifest.packType == 0)
+                    {
+                        ftbPackID = "m" + manifest.versionId;
+                        base64FTBID = Base64.getEncoder().encodeToString((String.valueOf(manifest.id) + manifest.versionId).getBytes(StandardCharsets.UTF_8));
+                        GetModpacksCHVersionRequest.Response response = MineTogetherServers.API.execute(new GetModpacksCHVersionRequest(base64FTBID)).apiResponse();
+                        if (response.getStatus().equals("error") || response.id.isEmpty()) {
+                            return false;
+                        }
+                        websiteID = response.id;
+                        return true;
+                    }
+                    else if(manifest.packType == 1)
+                    {
+                        //CurseForge pack
+                        curseID = String.valueOf(manifest.id);
+                        LOGGER.info("Extracted CurseID {} from instance.json", curseID);
+                        GetCurseForgeVersionRequest.Response response = MineTogetherServers.API.execute(new GetCurseForgeVersionRequest(curseID)).apiResponse();
+                        if (response.getStatus().equals("error") || response.id.isEmpty()) {
+                            return false;
+                        }
+                        websiteID = response.id;
+                        return true;
+                    }
+                } catch (Exception e){
+                    LOGGER.error("Failed to load version manifest.", e);
+                    return false;
+                }
+            }
+            return false;
         }
 
         private boolean readVersionJson(Path versionJson) {
@@ -139,6 +183,7 @@ public class ModPackInfo {
                     return true;
                 } catch (Exception ex) {
                     LOGGER.error("Failed to load version manifest.", ex);
+                    return false;
                 }
             }
             return false;
