@@ -103,7 +103,10 @@ public class ModPackInfo {
         }
 
         public VersionInfo init() {
-            if (!readVersionJson()) {
+            Path versionJson = Platform.getGameFolder().resolve("version.json");
+            Path versionJsonNew = Platform.getGameFolder().resolve(".ftbapp/version.json");
+
+            if (!readVersionJson(versionJson) && !readVersionJson(versionJsonNew)) {
                 if (curseID.isEmpty()) {
                     tryParseLauncherFiles();
                 }
@@ -122,8 +125,7 @@ public class ModPackInfo {
             return this;
         }
 
-        private boolean readVersionJson() {
-            Path versionJson = Platform.getGameFolder().resolve("version.json");
+        private boolean readVersionJson(Path versionJson) {
             if (Files.exists(versionJson)) {
                 try {
                     ModpackVersionManifest manifest = JsonUtils.parse(GSON, versionJson, ModpackVersionManifest.class);
