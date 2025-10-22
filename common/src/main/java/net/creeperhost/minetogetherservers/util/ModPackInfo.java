@@ -135,7 +135,7 @@ public class ModPackInfo {
                     }
                     websiteID = response.id;
                     return true;
-                } catch (IOException ex) {
+                } catch (Exception ex) {
                     LOGGER.error("Failed to load version manifest.", ex);
                 }
             }
