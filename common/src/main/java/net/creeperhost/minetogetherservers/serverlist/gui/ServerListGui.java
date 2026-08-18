@@ -103,7 +103,7 @@ public class ServerListGui implements GuiProvider {
                 .constrain(HEIGHT, literal(14));
 
         GuiButton back = MTStyle.Flat.button(root, Component.translatable("minetogether:gui.button.back_arrow"))
-                .onPress(() -> gui.mc().setScreen(gui.getParentScreen()))
+                .onPress(() -> gui.mc().gui.setScreen(gui.getParentScreen()))
                 .constrain(BOTTOM, relative(publicBtn.get(TOP), -4))
                 .constrain(LEFT, match(publicBtn.get(LEFT)))
                 .constrain(WIDTH, literal(50))

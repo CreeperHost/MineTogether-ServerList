@@ -10,7 +10,7 @@ public class NetHandlerLoginClientOurs extends ClientHandshakePacketListenerImpl
     private final Connection connection;
 
     public NetHandlerLoginClientOurs(Connection connection, Minecraft mcIn) {
-        super(connection, mcIn, null, null, false, null, e -> { }, null);
+        super(connection, mcIn, null, null, false, null, e -> { }, null, null);
         this.connection = connection;
     }
 

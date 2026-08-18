@@ -10,12 +10,13 @@ import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.permissions.Permissions;
 
 public class CommandPregen {
 
     public static LiteralArgumentBuilder<CommandSourceStack> register() {
 
-        return Commands.literal("pregen").requires((cs) -> cs.hasPermission(4))
+        return Commands.literal("pregen").requires((cs) -> cs.permissions().hasPermission(Permissions.COMMANDS_OWNER))
                 .then(Commands.argument("dimention", DimensionArgument.dimension())
                         .then(Commands.argument("minX", IntegerArgumentType.integer())
                                 .then(Commands.argument("maxX", IntegerArgumentType.integer())
@@ -48,7 +49,7 @@ public class CommandPregen {
         int zStartChunk;
 
         ServerLevel serverLevel = cs.getLevel();
-        BlockPos spawn = serverLevel.getSharedSpawnPos();
+        BlockPos spawn = serverLevel.getRespawnData().pos();
         xStartChunk = spawn.getX();
         zStartChunk = spawn.getY();
 
@@ -61,7 +62,7 @@ public class CommandPregen {
         int chunkMaxZ = zStartChunk + (zDiameter / 2);
 
         PregenHandler.addTask(dimention.dimension(), chunkMinX, chunkMaxX, chunkMinZ, chunkMaxZ, chunksPerTick, preventJoin);
-        cs.sendSuccess(() -> Component.literal("new PregenTask added for " + dimention.dimension().location()), false);
+        cs.sendSuccess(() -> Component.literal("new PregenTask added for " + dimention.dimension().identifier()), false);
         return 0;
     }
 

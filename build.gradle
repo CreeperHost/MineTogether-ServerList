@@ -1,9 +1,9 @@
 import org.jetbrains.gradle.ext.ActionDelegationConfig.TestRunner
 
 plugins {
-    id "architectury-plugin" version "3.4-SNAPSHOT"
-    id "dev.architectury.loom" version "1.11-SNAPSHOT" apply false
-    id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.5"
+    id "architectury-plugin" version "3.5-SNAPSHOT"
+    id "dev.architectury.loom-no-remap" version "1.17.491" apply false
+    id "org.jetbrains.gradle.plugin.idea-ext" version "1.4.1"
 }
 
 architectury {
@@ -11,11 +11,9 @@ architectury {
 }
 
 subprojects {
-    apply plugin: "dev.architectury.loom"
+    apply plugin: "dev.architectury.loom-no-remap"
 
     loom {
-        silentMojangMappingsLicense()
-
         // Enable Java assertions on all run configs
         runConfigs.each {
             it.vmArg '-ea'
@@ -25,18 +23,18 @@ subprojects {
     dependencies {
         minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
 
-        mappings loom.officialMojangMappings()
-
         localRuntime 'net.covers1624:DevLogin:0.1.0.5'
     }
 }
 
 allprojects {
-    apply plugin: "java"
+    apply plugin: "java-library"
     apply plugin: "architectury-plugin"
     apply plugin: "maven-publish"
 
-    archivesBaseName = rootProject.archives_base_name
+    base {
+        archivesName = rootProject.archives_base_name
+    }
     version = rootProject.mod_version
     group = rootProject.maven_group
 
@@ -49,9 +47,9 @@ allprojects {
         maven { url "https://maven.ftb.dev/releases" }
     }
 
-    tasks.withType(JavaCompile) {
+    tasks.withType(JavaCompile).configureEach {
         options.encoding = "UTF-8"
-        options.release = 21
+        options.release = 25
     }
 
     java {

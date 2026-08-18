@@ -76,7 +76,7 @@ public class MineTogetherServerList {
     private static void onScreenOpen(Screen screen, ScreenAccess screenAccess) {
         if (!(screen instanceof JoinMultiplayerScreen mpScreen)) return;
 
-        Button serverListButton = Button.builder(Component.translatable("minetogether:screen.multiplayer.serverlist"), e -> Minecraft.getInstance().setScreen(new ModularGuiScreen(new ServerListGui(), mpScreen)))
+        Button serverListButton = Button.builder(Component.translatable("minetogether:screen.multiplayer.serverlist"), e -> Minecraft.getInstance().gui.setScreen(new ModularGuiScreen(new ServerListGui(), mpScreen)))
                 .bounds(screen.width - 105, 5, 100, 20)
                 .build();
 //        serverListButton.active = !MineTogetherChat.isNewUser();

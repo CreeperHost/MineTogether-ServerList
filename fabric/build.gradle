@@ -1,5 +1,5 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "8.1.1"
+    id "com.gradleup.shadow" version "9.4.3"
 }
 
 architectury {
@@ -9,6 +9,7 @@ architectury {
 
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
+    injectAccessWidener(tasks.named("jar"))
 
     runs {
         clientLogin {
@@ -33,12 +34,12 @@ configurations {
 }
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-    modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
-    modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
-    modApi ("net.creeperhost:polylib-fabric:${polylib_version}")
+    api "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    api "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+    api "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
+    api ("net.creeperhost.polylib:polylib-fabric:${polylib_version}")
 
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
+    common(project(path: ":common")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 
     shadowLib "blue.endless:jankson:${jankson_version}"
@@ -63,8 +64,12 @@ processResources {
 }
 
 shadowJar {
+    dependsOn jar
+    mainSpec.sourcePaths.clear()
+    from(zipTree(jar.archiveFile))
     configurations = [project.configurations.shadowCommon]
-    archiveClassifier = "dev-shadow"
+    archiveBaseName = "${rootProject.archives_base_name}-${project.name}-${rootProject.minecraft_version}"
+    archiveClassifier = null
     mergeServiceFiles()
 
     relocate 'blue.endless', 'net.creeperhost.minetogetherservers.repack.blue.endless'
@@ -78,16 +83,21 @@ shadowJar {
     relocate 'net.creeperhost.minetogether.session', 'net.creeperhost.minetogetherservers.repack.minetogether.session'
 }
 
-remapJar {
-    injectAccessWidener = true
-    input.set shadowJar.archiveFile
-    dependsOn shadowJar
-    archiveBaseName.set "${rootProject.archives_base_name}-${project.name}-${rootProject.minecraft_version}"
-    archiveClassifier = null
+jar {
+    archiveClassifier = "raw"
 }
 
-jar {
-    archiveClassifier = "dev"
+assemble.dependsOn shadowJar
+
+configurations {
+    apiElements {
+        outgoing.artifacts.clear()
+        outgoing.artifact(shadowJar)
+    }
+    runtimeElements {
+        outgoing.artifacts.clear()
+        outgoing.artifact(shadowJar)
+    }
 }
 
 sourcesJar {

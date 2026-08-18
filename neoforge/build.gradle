@@ -1,9 +1,13 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "8.1.1"
+    id "com.gradleup.shadow" version "9.4.3"
 }
 
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
+
+    neoForge {
+        convertAccessWideners(tasks.named("shadowJar", Jar), "minetogetherservers.accesswidener")
+    }
 
     runs {
         clientLogin {
@@ -38,10 +42,10 @@ configurations {
 dependencies {
     neoForge("net.neoforged:neoforge:${rootProject.neoforge_version}")
 
-    modApi("dev.architectury:architectury-neoforge:${rootProject.architectury_version}")
-    modApi("net.creeperhost:polylib-neoforge:${polylib_version}") { transitive false }
+    api("dev.architectury:architectury-neoforge:${rootProject.architectury_version}")
+    api("net.creeperhost.polylib:polylib-neoforge:${polylib_version}") { transitive false }
 
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
+    common(project(path: ":common")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive = false }
 
     shadowLib "blue.endless:jankson:${jankson_version}"
@@ -69,8 +73,12 @@ shadowJar {
     exclude "fabric.mod.json"
     exclude "architectury.common.json"
 
+    dependsOn jar
+    mainSpec.sourcePaths.clear()
+    from(zipTree(jar.archiveFile))
     configurations = [project.configurations.shadowCommon]
-    archiveClassifier = "dev-shadow"
+    archiveBaseName = "${rootProject.archives_base_name}-${project.name}-${rootProject.minecraft_version}"
+    archiveClassifier = null
     mergeServiceFiles()
 
     relocate 'blue.endless', 'net.creeperhost.minetogetherservers.repack.blue.endless'
@@ -84,16 +92,21 @@ shadowJar {
     relocate 'net.creeperhost.minetogether.session', 'net.creeperhost.minetogetherservers.repack.minetogether.session'
 }
 
-remapJar {
-    input.set shadowJar.archiveFile
-    dependsOn shadowJar
-    archiveBaseName.set "${rootProject.archives_base_name}-${project.name}-${rootProject.minecraft_version}"
-    archiveClassifier = null
-    atAccessWideners.add('minetogetherservers.accesswidener')
+jar {
+    archiveClassifier = "raw"
 }
 
-jar {
-    archiveClassifier = "dev"
+assemble.dependsOn shadowJar
+
+configurations {
+    apiElements {
+        outgoing.artifacts.clear()
+        outgoing.artifact(shadowJar)
+    }
+    runtimeElements {
+        outgoing.artifacts.clear()
+        outgoing.artifact(shadowJar)
+    }
 }
 
 sourcesJar {

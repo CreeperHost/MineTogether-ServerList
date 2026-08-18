@@ -16,7 +16,8 @@ import net.creeperhost.polylib.client.modulargui.lib.geometry.GuiParent;
 import net.creeperhost.polylib.client.modulargui.sprite.Material;
 import net.minecraft.ChatFormatting;
 import net.minecraft.DefaultUncaughtExceptionHandler;
-import net.minecraft.Util;
+import net.minecraft.server.network.EventLoopGroupHolder;
+import net.minecraft.util.Util;
 import net.minecraft.client.gui.screens.FaviconTexture;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -178,7 +179,7 @@ public class ServerEntry extends GuiElement<ServerEntry> implements BackgroundRe
             THREAD_POOL.submit(() ->
             {
                 try {
-                    gui.getPinger().pingServer(this.serverData, () -> {}, () -> {});
+                    gui.getPinger().pingServer(this.serverData, () -> {}, () -> {}, EventLoopGroupHolder.remote(true));
                     gui.sortDirty = true;
                 } catch (UnknownHostException var2) {
                     this.serverData.ping = -1L;

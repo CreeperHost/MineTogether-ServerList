@@ -86,7 +86,7 @@ public class PregenHandler {
                 int chunksDelta = pregenTask.chunksDone - lastChunks;
                 int chunkProgress = percentage(pregenTask.totalChunks, pregenTask.chunksDone);
 
-                pregenTask.lastPregenString = "Pre-generating chunks for dimension " + pregenTask.dimension.location() + ", current speed " + chunksDelta + " every 10 seconds." + "\n" + pregenTask.chunksDone + "/" +
+                pregenTask.lastPregenString = "Pre-generating chunks for dimension " + pregenTask.dimension.identifier() + ", current speed " + chunksDelta + " every 10 seconds." + "\n" + pregenTask.chunksDone + "/" +
                         pregenTask.totalChunks + " " + getTimeRemaining(pregenTask) + " remaining " + ":";
 
                 LOGGER.info(pregenTask.lastPregenString);

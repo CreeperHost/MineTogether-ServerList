@@ -1,4 +1,4 @@
-accessWidener   v2  named
+accessWidener   v2  official
 
 extendable method net/minecraft/client/gui/components/ChatComponent isChatFocused ()Z
 accessible method net/minecraft/client/gui/components/ChatComponent isChatFocused ()Z
@@ -12,8 +12,6 @@ accessible field net/minecraft/client/gui/components/ChatComponent newMessageSin
 
 accessible field net/minecraft/client/gui/components/CommandSuggestions suggestions Lnet/minecraft/client/gui/components/CommandSuggestions$SuggestionsList;
 
-accessible field net/minecraft/client/gui/Gui chat Lnet/minecraft/client/gui/components/ChatComponent;
-
 extendable method net/minecraft/client/gui/components/AbstractSelectionList clearEntries ()V
 accessible method net/minecraft/client/gui/components/AbstractSelectionList clearEntries ()V
 
@@ -24,20 +22,12 @@ accessible field net/minecraft/server/network/ServerConnectionListener channels 
 accessible field net/minecraft/server/network/ServerConnectionListener connections Ljava/util/List;
 
 accessible field net/minecraft/client/server/IntegratedServer publishedPort I
-accessible field net/minecraft/client/server/IntegratedServer publishedGameType Lnet/minecraft/world/level/GameType;
 accessible field net/minecraft/server/MinecraftServer storageSource Lnet/minecraft/world/level/storage/LevelStorageSource$LevelStorageAccess;
-
-accessible field net/minecraft/server/players/PlayerList maxPlayers I
-mutable field net/minecraft/server/players/PlayerList maxPlayers I
 
 accessible field net/minecraft/client/gui/screens/ConnectScreen connection Lnet/minecraft/network/Connection;
 
 extendable method net/minecraft/client/gui/screens/ConnectScreen <init> (Lnet/minecraft/client/gui/screens/Screen;Lnet/minecraft/network/chat/Component;)V
 accessible method net/minecraft/client/gui/screens/ConnectScreen <init> (Lnet/minecraft/client/gui/screens/Screen;Lnet/minecraft/network/chat/Component;)V
-
-accessible field net/minecraft/client/gui/screens/ShareToLanScreen portEdit Lnet/minecraft/client/gui/components/EditBox;
-accessible field net/minecraft/client/gui/screens/ShareToLanScreen gameMode Lnet/minecraft/world/level/GameType;
-accessible field net/minecraft/client/gui/screens/ShareToLanScreen commands Z
 
 accessible field net/minecraft/client/gui/screens/Screen renderables Ljava/util/List;
 
