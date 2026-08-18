@@ -26,13 +26,35 @@ architectury {
 configurations {
     common
     shadowLib
+    quackRuntimeSource {
+        canBeConsumed = false
+        canBeResolved = true
+        transitive = false
+    }
     shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
     shadowCommon.extendsFrom shadowLib
     compileClasspath.extendsFrom common
-    runtimeClasspath.extendsFrom common
+    runtimeClasspath {
+        extendsFrom common
+        exclude group: "net.covers1624", module: "Quack"
+    }
     developmentNeoForge.extendsFrom common
     implementation.extendsFrom shadowLib
-    forgeRuntimeLibrary.extendsFrom shadowLib
+}
+
+def sanitizedQuack = tasks.register("sanitizeQuackForDev", Jar) {
+    archiveFileName = "Quack-dev-runtime.jar"
+    destinationDirectory = layout.buildDirectory.dir("runtime-libs")
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    from {
+        configurations.quackRuntimeSource.collect { zipTree(it) }
+    }
+
+    exclude "META-INF/MANIFEST.MF"
+    exclude "META-INF/*.SF"
+    exclude "META-INF/*.RSA"
+    exclude "META-INF/*.DSA"
 }
 
 dependencies {
@@ -51,6 +73,9 @@ dependencies {
     shadowLib("net.creeperhost:MineTogetherSessions:${mtsession_version}") {
         transitive false
     }
+
+    quackRuntimeSource "net.covers1624:Quack:${quack_version}"
+    runtimeOnly files(sanitizedQuack)
 
     shadowLib 'org.nanohttpd:nanohttpd:2.3.1'
     shadowLib 'com.github.scribejava:scribejava-apis:6.9.0'
