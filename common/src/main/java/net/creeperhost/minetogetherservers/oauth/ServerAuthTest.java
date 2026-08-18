@@ -3,6 +3,7 @@ package net.creeperhost.minetogetherservers.oauth;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.login.ServerboundHelloPacket;
+import net.minecraft.server.network.EventLoopGroupHolder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,7 +44,7 @@ public class ServerAuthTest {
                     }
 
                     inetaddress = new InetSocketAddress(InetAddress.getByName(address), port);
-                    networkManager = Connection.connectToServer(inetaddress, true, null);
+                    networkManager = Connection.connectToServer(inetaddress, EventLoopGroupHolder.remote(true), null);
                     networkManager.initiateServerboundPlayConnection(address, port, new NetHandlerLoginClientOurs(networkManager, mc));
                     networkManager.send(new ServerboundHelloPacket(mc.getUser().getName(), mc.getUser().getProfileId()));
 

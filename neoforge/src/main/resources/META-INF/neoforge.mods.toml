@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[9,)"
+loaderVersion = "[4,)"
 issueTrackerURL = "https://github.com/CreeperHost/MineTogether/issues"
 license = "GNU General Public License v3.0"
 
@@ -13,27 +13,27 @@ license = "GNU General Public License v3.0"
 [[dependencies.minetogetherservers]]
     modId = "neoforge"
     type="required"
-    versionRange = "[21.7,)"
+    versionRange = "[26.1.2.95,)"
     ordering = "NONE"
     side = "BOTH"
 
 [[dependencies.minetogetherservers]]
     modId = "minecraft"
     type="required"
-    versionRange = "[1.21.7,)"
+    versionRange = "[26.1.2,26.2)"
     ordering = "NONE"
     side = "BOTH"
 
 [[dependencies.minetogetherservers]]
     modId = "architectury"
     type="required"
-    versionRange = "[17.0.8,)"
+    versionRange = "[20.0.12,)"
     ordering = "AFTER"
     side = "BOTH"
 [[dependencies.minetogetherservers]]
     modId = "polylib"
     type="required"
-    versionRange = "[2107.1.0,)"
+    versionRange = "[2.0.11,)"
     ordering = "AFTER"
     side = "BOTH"
 
@@ -42,3 +42,6 @@ config = "minetogetherservers-neoforge.mixins.json"
 
 [[mixins]]
 config = "minetogetherservers-common.mixins.json"
+
+[[accessTransformers]]
+file = "META-INF/accesstransformer.cfg"

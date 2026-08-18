@@ -54,7 +54,7 @@ public class ClientPlayNetHandlerOurs implements ClientGamePacketListener {
     @Override public void handleMapItemData(ClientboundMapItemDataPacket clientboundMapItemDataPacket) { }
     @Override public void handleContainerClose(ClientboundContainerClosePacket clientboundContainerClosePacket) { }
     @Override public void handleContainerContent(ClientboundContainerSetContentPacket clientboundContainerSetContentPacket) { }
-    @Override public void handleHorseScreenOpen(ClientboundHorseScreenOpenPacket clientboundHorseScreenOpenPacket) { }
+    @Override public void handleMountScreenOpen(ClientboundMountScreenOpenPacket clientboundMountScreenOpenPacket) { }
     @Override public void handleContainerSetData(ClientboundContainerSetDataPacket clientboundContainerSetDataPacket) { }
     @Override public void handleContainerSetSlot(ClientboundContainerSetSlotPacket clientboundContainerSetSlotPacket) { }
     @Override public void handleEntityEvent(ClientboundEntityEventPacket clientboundEntityEventPacket) { }
@@ -70,6 +70,7 @@ public class ClientPlayNetHandlerOurs implements ClientGamePacketListener {
     @Override public void handleMovePlayer(ClientboundPlayerPositionPacket clientboundPlayerPositionPacket) { }
     @Override public void handleParticleEvent(ClientboundLevelParticlesPacket clientboundLevelParticlesPacket) { }
     @Override public void handlePlayerAbilities(ClientboundPlayerAbilitiesPacket clientboundPlayerAbilitiesPacket) { }
+    @Override public void handleGameRuleValues(ClientboundGameRuleValuesPacket clientboundGameRuleValuesPacket) { }
     @Override public void handleRemoveEntities(ClientboundRemoveEntitiesPacket clientboundRemoveEntitiesPacket) { }
     @Override public void handleRemoveMobEffect(ClientboundRemoveMobEffectPacket clientboundRemoveMobEffectPacket) { }
     @Override public void handleRespawn(ClientboundRespawnPacket clientboundRespawnPacket) { }
@@ -166,5 +167,11 @@ public class ClientPlayNetHandlerOurs implements ClientGamePacketListener {
     @Override public void handleSetPlayerInventory(ClientboundSetPlayerInventoryPacket clientboundSetPlayerInventoryPacket) { }
     @Override public void handleTestInstanceBlockStatus(ClientboundTestInstanceBlockStatus clientboundTestInstanceBlockStatus) { }
     @Override public void handleWaypoint(ClientboundTrackedWaypointPacket clientboundTrackedWaypointPacket) { }
+    @Override public void handleGameTestHighlightPos(ClientboundGameTestHighlightPosPacket clientboundGameTestHighlightPosPacket) { }
+    @Override public void handleDebugEvent(ClientboundDebugEventPacket clientboundDebugEventPacket) { }
+    @Override public void handleDebugEntityValue(ClientboundDebugEntityValuePacket clientboundDebugEntityValuePacket) { }
+    @Override public void handleDebugBlockValue(ClientboundDebugBlockValuePacket clientboundDebugBlockValuePacket) { }
+    @Override public void handleDebugChunkValue(ClientboundDebugChunkValuePacket clientboundDebugChunkValuePacket) { }
+    @Override public void handleLowDiskSpaceWarning(ClientboundLowDiskSpaceWarningPacket clientboundLowDiskSpaceWarningPacket) { }
     //@formatter:on
 }

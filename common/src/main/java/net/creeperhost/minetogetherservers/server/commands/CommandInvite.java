@@ -1,6 +1,5 @@
 package net.creeperhost.minetogetherservers.server.commands;
 
-import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -16,6 +15,8 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.permissions.Permissions;
+import net.minecraft.server.players.NameAndId;
 import net.minecraft.server.players.UserWhiteList;
 import net.minecraft.server.players.UserWhiteListEntry;
 import org.apache.logging.log4j.LogManager;
@@ -37,32 +38,32 @@ public class CommandInvite {
 
 
     public static LiteralArgumentBuilder<CommandSourceStack> register() {
-        return Commands.literal("invite").requires(cs -> cs.hasPermission(3)).then(Commands.argument("username", StringArgumentType.string()).executes(cs -> execute(cs, StringArgumentType.getString(cs, "username"))));
+        return Commands.literal("invite").requires(cs -> cs.permissions().hasPermission(Permissions.COMMANDS_ADMIN)).then(Commands.argument("username", StringArgumentType.string()).executes(cs -> execute(cs, StringArgumentType.getString(cs, "username"))));
     }
 
     private static int execute(CommandContext<CommandSourceStack> cs, String username) throws CommandSyntaxException {
         MinecraftServer minecraftServer = cs.getSource().getServer();
         if (username.isEmpty()) throw INVALID_USERNAME.create();
 
-        GameProfile gameProfile = minecraftServer.getProfileCache().get(username).get();
-        if (gameProfile == null) {
+        NameAndId profile = minecraftServer.services().nameToIdCache().get(username).orElse(null);
+        if (profile == null) {
             throw INVALID_GAME_PROFILE.create();
         }
 
-        if (minecraftServer.getPlayerList().getWhiteList().isWhiteListed(gameProfile)) {
+        if (minecraftServer.getPlayerList().getWhiteList().isWhiteListed(profile)) {
             throw ALREADY_WHITELISTED.create(username);
         }
 
-        UserWhiteListEntry userWhiteListEntry = new UserWhiteListEntry(gameProfile);
+        UserWhiteListEntry userWhiteListEntry = new UserWhiteListEntry(profile);
         minecraftServer.getPlayerList().getWhiteList().add(userWhiteListEntry);
         minecraftServer.getPlayerList().reloadWhiteList();
-        sendUserInvite(gameProfile, minecraftServer);
+        sendUserInvite(profile, minecraftServer);
 
         cs.getSource().sendSuccess(() -> Component.literal(username + " Added to whitelist"), false);
         return 0;
     }
 
-    public static void sendUserInvite(GameProfile profile, MinecraftServer server) {
+    public static void sendUserInvite(NameAndId profile, MinecraftServer server) {
         UserWhiteList whitelistedPlayers = server.getPlayerList().getWhiteList();
         ArrayList<String> tempHash = new ArrayList<>();
 

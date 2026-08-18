@@ -55,7 +55,7 @@ public class PregenTask {
         ServerLevel world = MineTogetherServersServer.minecraftServer.getLevel(dimension);
         if (diameterX > 0 && totalChunks == 0) // only the first time
         {
-            BlockPos pos = world.getSharedSpawnPos();
+            BlockPos pos = world.getRespawnData().pos();
             minX = (pos.getX() << 4) - (diameterX / 2);
             maxX = (pos.getX() << 4) + (diameterX / 2);
 

@@ -18,17 +18,19 @@
     "license": "GNU General Public License v3.0",
     "icon": "",
     "environment": "*",
+    "accessWidener": "minetogetherservers.accesswidener",
     "entrypoints": {
         "main": [
             "net.creeperhost.minetogetherservers.fabric.MineTogetherFabric"
         ]
     },
     "depends": {
-        "fabricloader": ">=0.17.2",
-        "fabric": "*",
-        "minecraft": "~1.21.7",
-        "architectury": ">=17.0.8",
-        "polylib": ">=2107.1.0.176"
+        "fabricloader": ">=0.19.3",
+        "fabric-api": "*",
+        "minecraft": "~26.1.2",
+        "java": ">=25",
+        "architectury": ">=20.0.12",
+        "polylib": ">=2.0.11"
     },
     "suggests": {
         "flamingo": "*"

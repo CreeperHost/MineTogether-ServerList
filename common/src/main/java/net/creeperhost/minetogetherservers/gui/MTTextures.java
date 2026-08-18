@@ -1,8 +1,8 @@
 package net.creeperhost.minetogetherservers.gui;
 
 import net.creeperhost.polylib.client.modulargui.sprite.Material;
-import net.creeperhost.polylib.client.modulargui.sprite.ModAtlasHolder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.Identifier;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,12 +16,8 @@ import static net.creeperhost.minetogetherservers.MineTogetherServers.MOD_ID;
  */
 public class MTTextures {
 
-    private static final ModAtlasHolder ATLAS_HOLDER = new ModAtlasHolder(MOD_ID, "textures/atlas/gui.png", "gui");
+    private static final Identifier TEXTURE_ID = Identifier.parse("minecraft:gui");
     private static final Map<String, Material> MATERIAL_CACHE = new HashMap<>();
-
-    public static ModAtlasHolder getAtlasHolder() {
-        return ATLAS_HOLDER;
-    }
 
     /**
      * Returns a cached Material for the specified gui texture.
@@ -29,7 +25,7 @@ public class MTTextures {
      * The material will cache the first render type it is used with.
      * Instead use {@link #getUncached(String)}
      *
-     * @param texture The texture path relative to "modid:gui/"
+     * @param texture The sprite path relative to {@code assets/minetogetherservers/textures/gui/sprites/}
      */
     public static Material get(String texture) {
         return MATERIAL_CACHE.computeIfAbsent(MOD_ID + ":" + texture, e -> getUncached(texture));
@@ -48,10 +44,11 @@ public class MTTextures {
      * Feel free to hold onto the returned material.
      * Storing it somewhere is more efficient than recreating it every render frame.
      *
-     * @param texture The texture path relative to "modid:gui/"
+     * @param texture The sprite path relative to {@code assets/minetogetherservers/textures/gui/sprites/}
      * @return A new Material for the specified gui texture.
      */
     public static Material getUncached(String texture) {
-        return new Material(ATLAS_HOLDER.atlasLocation(), ResourceLocation.fromNamespaceAndPath(MOD_ID, "gui/" + texture), ATLAS_HOLDER::getSprite);
+        Identifier textureId = Identifier.fromNamespaceAndPath(MOD_ID, texture);
+        return new Material(TEXTURE_ID, textureId, id -> Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(TEXTURE_ID).getSprite(id));
     }
 }

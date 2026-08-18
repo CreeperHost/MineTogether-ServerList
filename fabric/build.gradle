@@ -1,5 +1,5 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "8.1.1"
+    id "com.gradleup.shadow" version "9.4.2"
 }
 
 architectury {
@@ -22,7 +22,10 @@ loom {
 }
 
 configurations {
-    common
+    common {
+        canBeResolved = true
+        canBeConsumed = false
+    }
     shadowLib
     shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
     shadowCommon.extendsFrom shadowLib
@@ -33,12 +36,12 @@ configurations {
 }
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-    modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
-    modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
-    modApi ("net.creeperhost:polylib-fabric:${polylib_version}")
+    implementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+    implementation "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
+    implementation ("net.creeperhost.polylib:polylib-fabric:${polylib_version}")
 
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
+    common(project(path: ":common")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 
     shadowLib "blue.endless:jankson:${jankson_version}"
@@ -63,8 +66,11 @@ processResources {
 }
 
 shadowJar {
+    dependsOn jar
+    mainSpec.sourcePaths.clear()
+    from(zipTree(jar.archiveFile))
     configurations = [project.configurations.shadowCommon]
-    archiveClassifier = "dev-shadow"
+    archiveClassifier = null
     mergeServiceFiles()
 
     relocate 'blue.endless', 'net.creeperhost.minetogetherservers.repack.blue.endless'
@@ -76,18 +82,15 @@ shadowJar {
     relocate 'com.fasterxml.jackson', 'net.creeperhost.minetogetherservers.com.fasterxml.jackson'
     relocate 'net.creeperhost.minetogether.lib', 'net.creeperhost.minetogetherservers.repack.minetogether.lib'
     relocate 'net.creeperhost.minetogether.session', 'net.creeperhost.minetogetherservers.repack.minetogether.session'
+    archiveBaseName.set "${rootProject.archives_base_name}-${project.name}-${rootProject.minecraft_version}"
 }
 
-remapJar {
-    injectAccessWidener = true
-    input.set shadowJar.archiveFile
+assemble {
     dependsOn shadowJar
-    archiveBaseName.set "${rootProject.archives_base_name}-${project.name}-${rootProject.minecraft_version}"
-    archiveClassifier = null
 }
 
 jar {
-    archiveClassifier = "dev"
+    archiveClassifier = "raw"
 }
 
 sourcesJar {
