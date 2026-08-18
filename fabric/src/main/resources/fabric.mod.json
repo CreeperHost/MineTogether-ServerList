@@ -24,16 +24,17 @@
         ]
     },
     "depends": {
-        "fabricloader": ">=0.17.2",
+        "fabricloader": ">=0.19.3",
         "fabric": "*",
-        "minecraft": "~1.21.7",
-        "architectury": ">=17.0.8",
-        "polylib": ">=2107.1.0.176"
+        "minecraft": "~1.21.11",
+        "architectury": ">=19.0.1",
+        "polylib": ">=2111.1.2"
     },
     "suggests": {
         "flamingo": "*"
     },
     "mixins": [
-        "minetogetherservers-common.mixins.json"
+        "minetogetherservers-common.mixins.json",
+        "minetogetherservers-fabric.mixins.json"
     ]
 }

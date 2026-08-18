@@ -14,7 +14,7 @@ public class MineTogetherNeoForge {
     public MineTogetherNeoForge(IEventBus eventBus) {
         MineTogetherServers.init();
 
-        if (FMLEnvironment.dist.isClient()) {
+        if (FMLEnvironment.getDist().isClient()) {
             NeoForgeClientEvents.init(eventBus);
         }
     }

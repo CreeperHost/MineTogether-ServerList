@@ -13,27 +13,27 @@ license = "GNU General Public License v3.0"
 [[dependencies.minetogetherservers]]
     modId = "neoforge"
     type="required"
-    versionRange = "[21.7,)"
+    versionRange = "[21.11.45,)"
     ordering = "NONE"
     side = "BOTH"
 
 [[dependencies.minetogetherservers]]
     modId = "minecraft"
     type="required"
-    versionRange = "[1.21.7,)"
+    versionRange = "[1.21.11]"
     ordering = "NONE"
     side = "BOTH"
 
 [[dependencies.minetogetherservers]]
     modId = "architectury"
     type="required"
-    versionRange = "[17.0.8,)"
+    versionRange = "[19.0.1,)"
     ordering = "AFTER"
     side = "BOTH"
 [[dependencies.minetogetherservers]]
     modId = "polylib"
     type="required"
-    versionRange = "[2107.1.0,)"
+    versionRange = "[2111.1.2,)"
     ordering = "AFTER"
     side = "BOTH"
 

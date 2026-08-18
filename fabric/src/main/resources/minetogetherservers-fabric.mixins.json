@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "net.creeperhost.minetogetherservers.fabric.mixin",
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "AtlasManagerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

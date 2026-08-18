@@ -1,10 +1,9 @@
 package net.creeperhost.minetogetherservers.neoforge;
 
-import net.creeperhost.minetogetherservers.MineTogetherServers;
 import net.creeperhost.minetogetherservers.gui.MTTextures;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.resources.model.AtlasManager;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
+import net.neoforged.neoforge.client.event.RegisterTextureAtlasesEvent;
 
 /**
  * Created by brandon3055 on 01/10/2023
@@ -12,10 +11,10 @@ import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 public class NeoForgeClientEvents {
 
     public static void init(IEventBus eventBus) {
-        eventBus.addListener(NeoForgeClientEvents::registerReloadListeners);
+        eventBus.addListener(NeoForgeClientEvents::registerTextureAtlas);
     }
 
-    private static void registerReloadListeners(AddClientReloadListenersEvent event) {
-        event.addListener(ResourceLocation.fromNamespaceAndPath(MineTogetherServers.MOD_ID, "textures"), MTTextures.getAtlasHolder());
+    private static void registerTextureAtlas(RegisterTextureAtlasesEvent event) {
+        event.register(new AtlasManager.AtlasConfig(MTTextures.TEXTURE_ID, MTTextures.DEFINITION_LOCATION, false));
     }
 }
