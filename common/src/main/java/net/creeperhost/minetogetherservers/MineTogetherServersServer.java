@@ -1,14 +1,14 @@
 package net.creeperhost.minetogetherservers;
 
-import dev.architectury.event.events.common.CommandRegistrationEvent;
-import dev.architectury.event.events.common.LifecycleEvent;
-import dev.architectury.event.events.common.PlayerEvent;
-import dev.architectury.event.events.common.TickEvent;
 import net.creeperhost.minetogetherservers.server.Discoverability;
 import net.creeperhost.minetogetherservers.server.PregenHandler;
 import net.creeperhost.minetogetherservers.server.ServerListThread;
 import net.creeperhost.minetogetherservers.server.commands.MTCommands;
 import net.creeperhost.minetogetherservers.util.ModPackInfo;
+import net.creeperhost.polylib.event.events.server.PolyPlayerEvents;
+import net.creeperhost.polylib.event.events.server.PolyServerCommandEvents;
+import net.creeperhost.polylib.event.events.server.PolyServerLifecycleEvents;
+import net.creeperhost.polylib.event.events.server.PolyServerTickEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import org.apache.logging.log4j.LogManager;
@@ -35,13 +35,13 @@ public class MineTogetherServersServer {
     public static void init() {
         LOGGER.info("Initializing MineTogether Server List!");
 
-        CommandRegistrationEvent.EVENT.register(MTCommands::registerCommand);
-        TickEvent.SERVER_POST.register(PregenHandler::onWorldTick);
-        PlayerEvent.PLAYER_JOIN.register(PregenHandler::onPlayerJoin);
+        PolyServerCommandEvents.REGISTER_COMMANDS.register(MTCommands::registerCommand);
+        PolyServerTickEvents.TICK_END.register(PregenHandler::onWorldTick);
+        PolyPlayerEvents.LOGIN.register(PregenHandler::onPlayerJoin);
 
         PregenHandler.deserializePreload();
 
-        LifecycleEvent.SERVER_STARTED.register(MineTogetherServersServer::serverStarted);
+        PolyServerLifecycleEvents.SERVER_STARTED.register(MineTogetherServersServer::serverStarted);
     }
 
     private static void serverStarted(MinecraftServer server) {

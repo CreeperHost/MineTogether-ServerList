@@ -1,29 +1,40 @@
 package net.creeperhost.minetogetherservers;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.minecraft.network.Connection;
+import net.creeperhost.minetogetherservers.platform.IMineTogetherServersPlatform;
+import net.creeperhost.polylib.platform.Services;
+import net.minecraft.SharedConstants;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
+import java.util.Locale;
 
-/**
- * Created by covers1624 on 26/8/22.
- */
-public class MineTogetherServersPlatform {
+public final class MineTogetherServersPlatform {
+
+    private static final IMineTogetherServersPlatform PLATFORM = Services.load(IMineTogetherServersPlatform.class);
+
+    private MineTogetherServersPlatform() {
+    }
 
     @Nullable
-    @ExpectPlatform
     public static Path getModJar() {
-        throw new AssertionError();
+        return PLATFORM.getModJar();
     }
 
-    @ExpectPlatform
     public static String getVersion() {
-        throw new AssertionError();
+        return PLATFORM.getVersion();
     }
 
-    @ExpectPlatform
-    public static void prepareClientConnection(Connection connection) {
-        throw new AssertionError();
+    public static Path getGameFolder() {
+        Path configFolder = Services.PLATFORM.getConfigFolder().toAbsolutePath().normalize();
+        Path gameFolder = configFolder.getParent();
+        return gameFolder != null ? gameFolder : configFolder;
+    }
+
+    public static String getMinecraftVersion() {
+        return SharedConstants.getCurrentVersion().name();
+    }
+
+    public static String getPlatformName() {
+        return Services.PLATFORM.getPlatformName().toLowerCase(Locale.ROOT);
     }
 }

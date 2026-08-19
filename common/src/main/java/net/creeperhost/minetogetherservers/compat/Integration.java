@@ -1,6 +1,6 @@
 package net.creeperhost.minetogetherservers.compat;
 
-import dev.architectury.platform.Platform;
+import net.creeperhost.polylib.platform.Services;
 
 import java.util.function.Supplier;
 
@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 public class Integration {
 
     public static void runOptional(String modid, Supplier<Runnable> runnable) {
-        if (Platform.isModLoaded(modid)) {
+        if (Services.PLATFORM.isModLoaded(modid)) {
             runnable.get().run();
         }
     }

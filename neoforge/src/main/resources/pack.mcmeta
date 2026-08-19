@@ -1,6 +1,8 @@
 {
   "pack": {
-    "description": "Minetogether Parteners",
-    "pack_format": 84
+    "description": "MineTogether Partners",
+    "pack_format": 84,
+    "min_format": 84,
+    "max_format": 84
   }
 }

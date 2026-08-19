@@ -1,9 +1,9 @@
 package net.creeperhost.minetogetherservers.util;
 
 import com.google.common.hash.Hashing;
-import dev.architectury.platform.Platform;
 import net.covers1624.quack.util.HashUtils;
 import net.creeperhost.minetogetherservers.MineTogetherServersPlatform;
+import net.creeperhost.polylib.platform.Services;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,7 +15,7 @@ public class SignatureVerifier {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static String generateSignature() {
-        if (!Platform.isDevelopmentEnvironment() && System.getProperty("mt.develop.signature") == null) {
+        if (!Services.PLATFORM.isDevelopmentEnvironment() && System.getProperty("mt.develop.signature") == null) {
             Path modJar = MineTogetherServersPlatform.getModJar();
             if (modJar != null && modJar.toString().endsWith(".jar")) {
                 try {
