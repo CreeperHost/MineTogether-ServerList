@@ -2,7 +2,7 @@ package net.creeperhost.minetogetherservers.config;
 
 import blue.endless.jankson.*;
 import blue.endless.jankson.api.SyntaxError;
-import dev.architectury.platform.Platform;
+import net.creeperhost.polylib.platform.Services;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
@@ -35,7 +35,7 @@ public class Config {
 
     public static Config instance() {
         if (INSTANCE == null) {
-            loadConfig(Platform.getConfigFolder().resolve(MOD_ID + ".json"));
+            loadConfig(Services.PLATFORM.getConfigFolder().resolve(MOD_ID + ".json"));
         }
 
         return INSTANCE;

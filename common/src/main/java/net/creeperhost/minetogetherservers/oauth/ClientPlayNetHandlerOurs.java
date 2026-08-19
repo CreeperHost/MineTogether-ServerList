@@ -8,7 +8,7 @@ import net.minecraft.network.protocol.cookie.ClientboundCookieRequestPacket;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.protocol.ping.ClientboundPongResponsePacket;
 
-public class ClientPlayNetHandlerOurs implements ClientGamePacketListener {
+public abstract class ClientPlayNetHandlerOurs implements ClientGamePacketListener {
 
     private final Connection networkManagerIn;
 

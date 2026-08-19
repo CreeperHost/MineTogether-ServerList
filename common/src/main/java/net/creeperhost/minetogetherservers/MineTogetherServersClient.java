@@ -1,14 +1,13 @@
 package net.creeperhost.minetogetherservers;
 
-import dev.architectury.event.events.client.ClientGuiEvent;
-import dev.architectury.event.events.client.ClientLifecycleEvent;
-import dev.architectury.hooks.client.screen.ScreenAccess;
 import net.creeperhost.minetogether.lib.web.ApiClientResponse;
 import net.creeperhost.minetogether.session.MineTogetherSession;
 import net.creeperhost.minetogetherservers.serverlist.MineTogetherServerList;
 import net.creeperhost.minetogetherservers.serverlist.data.Server;
 import net.creeperhost.minetogetherservers.serverlist.web.GetServerRequest;
 import net.creeperhost.minetogetherservers.util.MTSessionProvider;
+import net.creeperhost.polylib.event.events.client.PolyClientLifecycleEvents;
+import net.creeperhost.polylib.event.events.client.PolyScreenEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ConnectScreen;
 import net.minecraft.client.gui.screens.Screen;
@@ -35,10 +34,10 @@ public class MineTogetherServersClient {
     public static void init() {
         LOGGER.info("Initializing MineTogether Server List Client!");
 
-        ClientGuiEvent.INIT_POST.register(MineTogetherServersClient::onScreenOpen);
+        PolyScreenEvents.SCREEN_OPENED.register((mc, screen, width, height) -> onScreenOpen(screen));
 
         //Cant do this in init anymore because init now occurs before Minecraft.instance is initialised.
-        ClientLifecycleEvent.CLIENT_SETUP.register(instance -> {
+        PolyClientLifecycleEvents.CLIENT_STARTED.register(instance -> {
             MineTogetherServerList.init();
             MineTogetherSession.getDefault().setProvider(new MTSessionProvider());
             MineTogetherSession.getDefault().onTokenRefreshed(token -> {
@@ -49,7 +48,7 @@ public class MineTogetherServersClient {
         });
     }
 
-    private static void onScreenOpen(Screen screen, ScreenAccess screenAccess) {
+    private static void onScreenOpen(Screen screen) {
         if (screen instanceof TitleScreen && first) {
             first = false;
             String serverProp = System.getProperty("mt.server");

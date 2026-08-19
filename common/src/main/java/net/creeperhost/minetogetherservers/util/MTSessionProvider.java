@@ -1,8 +1,8 @@
 package net.creeperhost.minetogetherservers.util;
 
-import dev.architectury.injectables.targets.ArchitecturyTarget;
-import dev.architectury.platform.Platform;
 import net.creeperhost.minetogetherservers.MineTogetherServersPlatform;
+import net.creeperhost.minetogetherservers.MineTogetherServers;
+import net.creeperhost.polylib.platform.Services;
 import net.creeperhost.minetogether.lib.MineTogetherLib;
 import net.creeperhost.minetogether.session.MojangUtils;
 import net.creeperhost.minetogether.session.SessionProvider;
@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -24,9 +25,9 @@ public class MTSessionProvider implements SessionProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(MTSessionProvider.class);
     private static final String UA =
             "MineTogether-lib/" + MineTogetherLib.VERSION +
-            " MineTogether-Servers-mod/" + MineTogetherServersPlatform.getVersion() +
-            " Minecraft/" + Platform.getMinecraftVersion() +
-            " Modloader/" + ArchitecturyTarget.getCurrentTarget();
+            " MineTogether-Servers-mod/" + MineTogetherServersPlatform.INSTANCE.getVersion() +
+            " Minecraft/" + MineTogetherServers.minecraftVersion() +
+            " Modloader/" + Services.PLATFORM.getPlatformName().toLowerCase(Locale.ROOT);
     private final Minecraft MC = Minecraft.getInstance();
     private final User U = MC.getUser();
     private final String PN = U.getName();

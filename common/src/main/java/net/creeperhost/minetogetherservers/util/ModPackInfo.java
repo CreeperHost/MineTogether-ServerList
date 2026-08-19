@@ -3,7 +3,6 @@ package net.creeperhost.minetogetherservers.util;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import dev.architectury.platform.Platform;
 import net.covers1624.quack.gson.JsonUtils;
 import net.creeperhost.minetogether.lib.web.requests.GetCurseForgeVersionRequest;
 import net.creeperhost.minetogether.lib.web.requests.GetModpacksCHVersionRequest;
@@ -25,6 +24,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
+
+import static net.creeperhost.minetogetherservers.MineTogetherServers.gameFolder;
+import static net.creeperhost.polylib.platform.Services.PLATFORM;
 
 /**
  * Created by covers1624 on 25/10/22.
@@ -109,8 +111,8 @@ public class ModPackInfo {
         }
 
         public VersionInfo init() {
-            Path versionJson = Platform.getGameFolder().resolve("version.json");
-            Path versionJsonNew = Platform.getGameFolder().resolve("instance.json");
+            Path versionJson = gameFolder().resolve("version.json");
+            Path versionJsonNew = gameFolder().resolve("instance.json");
 
             if (!readVersionJson(versionJson)) {
                 if (!readNewFTB(versionJsonNew)) {
@@ -205,7 +207,7 @@ public class ModPackInfo {
         }
 
         private void tryParseLauncherFiles() {
-            Path auxilium = Platform.getConfigFolder().resolve("metadata.json");
+            Path auxilium = PLATFORM.getConfigFolder().resolve("metadata.json");
             if(Files.exists(auxilium)) {
                 try {
                     Auxilium aux = JsonUtils.parse(GSON, auxilium, Auxilium.class);
@@ -226,7 +228,7 @@ public class ModPackInfo {
             }
 
             //Curse App
-            Path instanceJson = Platform.getGameFolder().resolve("instance.json");
+            Path instanceJson = gameFolder().resolve("instance.json");
             if (Files.exists(instanceJson)) {
                 try {
                     FTBInstance instance = JsonUtils.parse(GSON, instanceJson, FTBInstance.class);
@@ -246,7 +248,7 @@ public class ModPackInfo {
             }
 
             //Curse Launcher
-            Path versionJson = Platform.getGameFolder().resolve("minecraftinstance.json");
+            Path versionJson = gameFolder().resolve("minecraftinstance.json");
             if (Files.exists(versionJson)) {
                 try {
                     CurseInstance instance = JsonUtils.parse(GSON, versionJson, CurseInstance.class);
@@ -266,7 +268,7 @@ public class ModPackInfo {
             }
 
             //Prism
-            Path instanceCfg = Platform.getGameFolder().getParent().resolve("instance.cfg");
+            Path instanceCfg = gameFolder().getParent().resolve("instance.cfg");
             if (Files.exists(instanceCfg)) {
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(instanceCfg)))){
                     String line;

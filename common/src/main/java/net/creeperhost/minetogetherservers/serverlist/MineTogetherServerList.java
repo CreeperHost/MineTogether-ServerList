@@ -1,9 +1,6 @@
 package net.creeperhost.minetogetherservers.serverlist;
 
 import com.google.common.hash.Hashing;
-import dev.architectury.event.events.client.ClientGuiEvent;
-import dev.architectury.hooks.client.screen.ScreenAccess;
-import dev.architectury.hooks.client.screen.ScreenHooks;
 import net.creeperhost.minetogether.lib.web.ApiClientResponse;
 import net.creeperhost.minetogetherservers.MineTogetherServers;
 import net.creeperhost.minetogetherservers.serverlist.data.ListType;
@@ -12,6 +9,7 @@ import net.creeperhost.minetogetherservers.serverlist.gui.ServerListGui;
 import net.creeperhost.minetogetherservers.serverlist.web.GetServerListRequest;
 import net.creeperhost.minetogetherservers.util.ModPackInfo;
 import net.creeperhost.polylib.client.modulargui.ModularGuiScreen;
+import net.creeperhost.polylib.event.events.client.PolyScreenEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -54,7 +52,7 @@ public class MineTogetherServerList {
             }
         });
 
-        ClientGuiEvent.INIT_POST.register(MineTogetherServerList::onScreenOpen);
+        PolyScreenEvents.SCREEN_OPENED.register((mc, screen, width, height) -> onScreenOpen(screen));
     }
 
     public static List<Server> updateServers(ListType type) {
@@ -73,13 +71,13 @@ public class MineTogetherServerList {
         }
     }
 
-    private static void onScreenOpen(Screen screen, ScreenAccess screenAccess) {
+    private static void onScreenOpen(Screen screen) {
         if (!(screen instanceof JoinMultiplayerScreen mpScreen)) return;
 
         Button serverListButton = Button.builder(Component.translatable("minetogether:screen.multiplayer.serverlist"), e -> Minecraft.getInstance().gui.setScreen(new ModularGuiScreen(new ServerListGui(), mpScreen)))
                 .bounds(screen.width - 105, 5, 100, 20)
                 .build();
 //        serverListButton.active = !MineTogetherChat.isNewUser();
-        ScreenHooks.addRenderableWidget(mpScreen, serverListButton);
+        mpScreen.addRenderableWidget(serverListButton);
     }
 }

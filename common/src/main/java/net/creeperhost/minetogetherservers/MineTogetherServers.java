@@ -1,7 +1,5 @@
 package net.creeperhost.minetogetherservers;
 
-import dev.architectury.injectables.targets.ArchitecturyTarget;
-import dev.architectury.platform.Platform;
 import net.covers1624.quack.net.httpapi.HttpEngine;
 import net.covers1624.quack.net.httpapi.java11.Java11HttpEngine;
 import net.creeperhost.minetogether.lib.MineTogetherLib;
@@ -11,8 +9,13 @@ import net.creeperhost.minetogetherservers.config.Config;
 import net.creeperhost.minetogetherservers.util.Log4jUtils;
 import net.creeperhost.minetogetherservers.util.ModPackInfo;
 import net.creeperhost.minetogetherservers.util.SignatureVerifier;
+import net.creeperhost.polylib.platform.Services;
+import net.minecraft.SharedConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.nio.file.Path;
+import java.util.Locale;
 
 /**
  * Main common mod entrypoint.
@@ -31,14 +34,14 @@ public class MineTogetherServers {
     public static final ApiClient API = ApiClient.builder()
             .httpEngine(WEB_ENGINE)
             .addUserAgentSegment("MineTogether-lib/" + MineTogetherLib.VERSION)
-            .addUserAgentSegment("MineTogether-Servers-mod/" + MineTogetherServersPlatform.getVersion())
-            .addUserAgentSegment("Minecraft/" + Platform.getMinecraftVersion())
-            .addUserAgentSegment("Modloader/" + ArchitecturyTarget.getCurrentTarget())
+            .addUserAgentSegment("MineTogether-Servers-mod/" + MineTogetherServersPlatform.INSTANCE.getVersion())
+            .addUserAgentSegment("Minecraft/" + minecraftVersion())
+            .addUserAgentSegment("Modloader/" + Services.PLATFORM.getPlatformName().toLowerCase(Locale.ROOT))
             .webAuth(AUTH)
             .build();
 
     public static void init() {
-        Log4jUtils.attachMTLogs(Platform.getGameFolder().resolve("logs"));
+        Log4jUtils.attachMTLogs(gameFolder().resolve("logs"));
         LOGGER.info("Initializing MineTogether Server List!");
         AUTH.setHeader("Fingerprint", FINGERPRINT);
 
@@ -48,9 +51,20 @@ public class MineTogetherServers {
 
         ModPackInfo.init();
         ModPackInfo.waitForInfo(info -> AUTH.setHeader("Identifier", info.realName));
-        switch (Platform.getEnv()) {
-            case CLIENT -> MineTogetherServersClient.init();
-            case SERVER -> MineTogetherServersServer.init();
+        if (Services.PLATFORM.isClient()) {
+            MineTogetherServersClient.init();
+        } else {
+            MineTogetherServersServer.init();
         }
+    }
+
+    public static Path gameFolder() {
+        Path configFolder = Services.PLATFORM.getConfigFolder().toAbsolutePath().normalize();
+        Path parent = configFolder.getParent();
+        return parent != null ? parent : Path.of("").toAbsolutePath().normalize();
+    }
+
+    public static String minecraftVersion() {
+        return SharedConstants.getCurrentVersion().id();
     }
 }

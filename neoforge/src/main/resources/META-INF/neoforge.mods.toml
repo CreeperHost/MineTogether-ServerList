@@ -25,12 +25,6 @@ license = "GNU General Public License v3.0"
     side = "BOTH"
 
 [[dependencies.minetogetherservers]]
-    modId = "architectury"
-    type="required"
-    versionRange = "[21.0.7,)"
-    ordering = "AFTER"
-    side = "BOTH"
-[[dependencies.minetogetherservers]]
     modId = "polylib"
     type="required"
     versionRange = "[2.0.10,)"

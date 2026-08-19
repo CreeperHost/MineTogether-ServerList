@@ -1,73 +1,68 @@
 plugins {
     id "com.gradleup.shadow" version "9.4.3"
-}
-
-architectury {
-    platformSetupLoomIde()
-    fabric()
+    id "net.fabricmc.fabric-loom"
 }
 
 loom {
-    accessWidenerPath = project(":common").loom.accessWidenerPath
-    injectAccessWidener(tasks.named("jar"))
+    accessWidenerPath = project(":common").file("src/main/resources/minetogetherservers.accesswidener")
 
     runs {
         clientLogin {
             client()
             ideConfigGenerated true
             mainClass.set 'net.covers1624.devlogin.DevLogin'
-
             programArgs '--launch_target', 'net.fabricmc.loader.impl.launch.knot.KnotClient'
         }
     }
 }
 
 configurations {
-    common
+    commonJava { canBeResolved = true }
+    commonResources { canBeResolved = true }
     shadowLib
-    shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
-    shadowCommon.extendsFrom shadowLib
-    compileClasspath.extendsFrom common
-    runtimeClasspath.extendsFrom common
-    developmentFabric.extendsFrom common
     implementation.extendsFrom shadowLib
 }
 
 dependencies {
-    api "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-    api "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
-    api "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
-    api ("net.creeperhost.polylib:polylib-fabric:${polylib_version}")
+    minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+    implementation("net.creeperhost.polylib:polylib-fabric:${polylib_version}") { transitive false }
 
-    common(project(path: ":common")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
+    compileOnly(project(":common"))
+    commonJava project(path: ":common", configuration: "commonJava")
+    commonResources project(path: ":common", configuration: "commonResources")
 
     shadowLib "blue.endless:jankson:${jankson_version}"
     shadowLib("net.creeperhost:MineTogetherLib:${mtlib_version}") {
         exclude group: "net.creeperhost", module: "MineTogetherSessions"
     }
-    shadowLib("net.creeperhost:MineTogetherSessions:${mtsession_version}") {
-        transitive false
-    }
-
+    shadowLib("net.creeperhost:MineTogetherSessions:${mtsession_version}") { transitive false }
     shadowLib 'org.nanohttpd:nanohttpd:2.3.1'
     shadowLib 'com.github.scribejava:scribejava-apis:6.9.0'
     shadowLib 'com.github.scribejava:scribejava-core:6.9.0'
+
+    localRuntime 'net.covers1624:DevLogin:0.1.0.5'
+}
+
+tasks.named("compileJava", JavaCompile) {
+    dependsOn(configurations.commonJava)
+    source(configurations.commonJava)
 }
 
 processResources {
+    dependsOn(configurations.commonResources)
+    from(configurations.commonResources)
     inputs.property "version", project.version
-
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version
-    }
+    filesMatching("fabric.mod.json") { expand "version": project.version }
 }
 
 shadowJar {
+    exclude "META-INF/accesstransformer.cfg"
     dependsOn jar
     mainSpec.sourcePaths.clear()
     from(zipTree(jar.archiveFile))
-    configurations = [project.configurations.shadowCommon]
+    configurations = [project.configurations.shadowLib]
     archiveBaseName = "${rootProject.archives_base_name}-${project.name}-${rootProject.minecraft_version}"
     archiveClassifier = null
     mergeServiceFiles()
@@ -77,16 +72,12 @@ shadowJar {
     relocate 'org.pircbotx', 'net.creeperhost.minetogetherservers.repack.org.pircbotx'
     relocate 'com.github.scribejava', 'net.creeperhost.minetogetherservers.com.github.scribejava'
     relocate 'fi.iki.elonen', 'net.creeperhost.minetogetherservers.fi.iki.elonen'
-    // TODO can we switch scribejava to using Gson?
     relocate 'com.fasterxml.jackson', 'net.creeperhost.minetogetherservers.com.fasterxml.jackson'
     relocate 'net.creeperhost.minetogether.lib', 'net.creeperhost.minetogetherservers.repack.minetogether.lib'
     relocate 'net.creeperhost.minetogether.session', 'net.creeperhost.minetogetherservers.repack.minetogether.session'
 }
 
-jar {
-    archiveClassifier = "raw"
-}
-
+jar { archiveClassifier = "raw" }
 assemble.dependsOn shadowJar
 
 configurations {
@@ -101,15 +92,13 @@ configurations {
 }
 
 sourcesJar {
-    def commonSources = project(":common").sourcesJar
-    dependsOn commonSources
-    from commonSources.archiveFile.map { zipTree(it) }
+    dependsOn(configurations.commonJava, configurations.commonResources)
+    from(configurations.commonJava)
+    from(configurations.commonResources)
 }
 
 components.java {
-    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
-        skip()
-    }
+    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) { skip() }
 }
 
 publishing {
@@ -120,4 +109,3 @@ publishing {
         }
     }
 }
-
